@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Glenn's Gadgets</h1>
+    <p class="lead">This is a sample app that demonstrates Azure Web Sites, ASP.NET MVC 4.5, SignalR, AngularJS.</p>
+    <p><a href="http://github.com/lightspeedsolutions" class="btn btn-primary btn-lg">Get the code &raquo;</a></p>
+</div>
+
+<div class="row" ng-app="mainApp">
+        <div class="col-md-12" ng-controller="gadgetListController">
+            <div>
+                SignalR Status: <span id="srstatus"></span>
+            </div>
+            <ul class="gadgets">
+                <li ng-repeat="g in gadgets">
+                    <h3>{{g.Title}}</h3>
+
+                    <p>
+                        {{g.Description}}
+                    </p>
+                    
+                    <p>
+                        <u>Last Bid</u>: <span class="amt" data-title="{{g.Title}}">{{g.Bids.length == 0 ? 'No bids' : g.maxBidAmount() }}</span>
+                    </p>
+                    
+                    <p>
+                        <button ng-click="g.bid();">Place Bid</button>
+                        @*@if (User.Identity.IsAuthenticated)
+                        {
+                            
+                        }
+                        else
+                        {
+                            <button class="noaccess" disabled="disabled">Login to bid</button>
+                        }*@
+                    </p>
+                </li>
+            </ul>
+        </div>
+</div>
+
+
+
+@section scripts {
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-resource.min.js"></script>
+    <script>
+        // SignalR hub connection
+        var bids = $.connection.bids;
+        var sessionid = '@Context.Session.SessionID';
+        // define child events
+        bids.client.updateGadgetBids = function (el, amt) {
+            //console.log(amt);
+            $('[data-title="' + el + '"]').text("$"+ amt.toString())
+        };
+        bids.client.setCount = function (count) {
+            $("#srstatus").text(count + " user(s) connected");
+        }
+        // connect to hub
+        $.connection.hub.start().done(function () {
+            bids.server.connect(sessionid).done(function () {
+                bids.server.getSessionCount();
+            });
+        });
+    </script>
+    <!-- AngularJS Model -->
+    <script src="~/Scripts/app/mainApp.js"></script>
+}

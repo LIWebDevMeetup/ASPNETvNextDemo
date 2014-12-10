@@ -1,0 +1,51 @@
+﻿@cardbg: #4E5D6C;
+@cardtitle: #b15315;
+@btncolor: #DF691A;
+@btnhover: #b15315;
+
+
+.noborder() {
+    border: 0;
+}
+
+.vertpad (@size:0px) {
+    padding-top: @size;
+    padding-bottom: @size;
+}
+
+.gadgets {
+    padding: 2px;
+    list-style: none;
+    li {
+        padding: 14px;
+        margin-right: 8px;
+        background-color: @cardbg;
+        float: left;
+
+        h3 { 
+            
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            background-color: @btncolor;
+            color: white;
+
+            .vertpad(8px);
+            .noborder;
+
+            &:hover {
+                background-color: @cardtitle;
+            }
+
+            &.noaccess {
+                color: #444;
+                background-color: #ccc;
+            }
+            
+        }
+    }
+}
+
+
